@@ -8,7 +8,7 @@ using Ensage.Common.Menu;
 
 using SharpDX;
 
-namespace VisibleByEnemy
+namespace CreepWhisperer
 {
     class Program
     {

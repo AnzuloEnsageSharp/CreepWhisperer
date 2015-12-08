@@ -7,8 +7,8 @@
     <ProjectGuid>{EBFCE97E-DD8E-4A33-8C60-0A819430D971}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>VisibleByEnemy</RootNamespace>
-    <AssemblyName>VisibleByEnemy</AssemblyName>
+    <RootNamespace>CreepWhisperer</RootNamespace>
+    <AssemblyName>CreepWhisperer</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <PreBuildEvent />
