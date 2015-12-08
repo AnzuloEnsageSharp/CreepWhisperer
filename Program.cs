@@ -19,9 +19,12 @@ namespace CreepWhisperer
         private static readonly MenuItem UnaggroKeyItem =
             new MenuItem("unaggroKey", "Unaggro Key").SetValue(new KeyBind('F', KeyBindType.Press));
 
+        private static readonly MenuItem AggroRangeEffectItem =
+            new MenuItem("aggroRangeEffect", "Mark aggroable creeps").SetValue(true);
+
         private static readonly Dictionary<Unit, ParticleEffect> Effects = new Dictionary<Unit, ParticleEffect>();
 
-        private static bool isAttacking = false;
+        private static bool _isAttacking = false;
         public static void Main(string[] args)
         {
             Menu.AddItem(AggroKeyItem);
@@ -56,14 +59,13 @@ namespace CreepWhisperer
             }
 
             // instantly cancel attack
-            if (isAttacking)
+            if (_isAttacking)
             {
-                isAttacking = false;
+                _isAttacking = false;
                 me.Hold();
                 // TODO: Continue previous action
             }
 
-            // creeps in aggro range
             var creeps = ObjectMgr.GetEntities<Creep>();
 
             if (Utils.SleepCheck("aggroSleep"))
@@ -73,7 +75,7 @@ namespace CreepWhisperer
                 {
                     var enemy = GetHeroes(me).FirstOrDefault(x => x.Team != me.Team);
                     me.Attack(enemy);
-                    isAttacking = true;
+                    _isAttacking = true;
                 }
 
                 // unaggro
@@ -81,7 +83,7 @@ namespace CreepWhisperer
                 {
                     var ally = GetHeroes(me).FirstOrDefault(x => x.Team == me.Team);
                     me.Attack(ally);
-                    isAttacking = true;
+                    _isAttacking = true;
                 }
 
                 // apply range effect
@@ -97,14 +99,15 @@ namespace CreepWhisperer
 
         private static bool IsAggroable(Unit x, Hero me)
         {
-            return x != null && x.IsValid && x.IsAlive && x.Team != me.Team && me.Distance2D(x) <= 500 && me.IsVisibleToEnemies;
+            return x != null && x.IsValid && x.IsAlive && x.Team != me.Team 
+                && me.Distance2D(x) <= 500 && me.IsVisibleToEnemies;
         }
 
         private static IOrderedEnumerable<Hero> GetHeroes(Hero me)
         {
             return ObjectMgr.GetEntities<Hero>()
-                            .Where(x => x != null && x.IsValid && x.IsAlive && x.IsVisible)
-                            .OrderBy(me.Distance2D);
+                .Where(x => x != null && x.IsValid && x.IsAlive && x.IsVisible)
+                .OrderBy(me.Distance2D);
         }
 
         static void HandleEffect(Unit unit, Hero me)
@@ -112,7 +115,7 @@ namespace CreepWhisperer
             if (IsAggroable(unit, me) && GetHeroes(me).Any())
             {
                 ParticleEffect effect;
-                if (!Effects.TryGetValue(unit, out effect))
+                if (!Effects.TryGetValue(unit, out effect) && AggroRangeEffectItem.GetValue<bool>())
                 {
                     effect = unit.AddParticleEffect(@"particles\units\heroes\hero_beastmaster\beastmaster_wildaxe_glow.vpcf");
                     Effects.Add(unit, effect);
