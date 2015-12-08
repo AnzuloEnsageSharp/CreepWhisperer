@@ -27,6 +27,7 @@ namespace CreepWhisperer
         private static bool _isAttacking = false;
         public static void Main(string[] args)
         {
+            Menu.AddItem(AggroRangeEffectItem);
             Menu.AddItem(AggroKeyItem);
             Menu.AddItem(UnaggroKeyItem);
             Menu.AddToMainMenu();
